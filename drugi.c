@@ -52,13 +52,13 @@ int main() {
 	return 0;
 }
 
-void Umetni(pozicija p)
+void UnesiEl(pozicija p)
 {
 	pozicija d = NULL;
 	d = (pozicija)malloc(sizeof(osoba));
 	if (d == NULL)
 		return 1;
-	UnesiPodatke(d);
+	Podatci(d);
 	d->next = p->next;
 	p->next = d;
 }
@@ -81,7 +81,7 @@ void UnesiElK(pozicija d, pozicija p)
 	while (d->next != NULL) {
 		d = d->next;
 	}
-	Umetni(p);
+	UnesiEl(p);
 }
 
 pozicija TraziEl(pozicija p, char prezime[])
