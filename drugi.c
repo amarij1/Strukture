@@ -1,93 +1,120 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
-struct osob;
-typedef struct osob* pozicija;
-typedef struct osob
-{
-	char ime[100];
-	char prezime[100];
+typedef struct osoba* pozicija;
+
+struct osoba {
+	char ime[50];
+	char prezime[50];
 	int godina;
 	pozicija next;
-}osoba;
-void UnesiEl(pozicija);
-void Podatci(pozicija);
-int Isp(pozicija);
-void UnesiElK(pozicija, pozicija);
-pozicija TraziEl(pozicija, char[]);
+};
 
+void ispis(pozicija);
+void umetniPocetak(pozicija);
+void unesiPodatke(pozicija);
+void umetniKraj(pozicija);
+pozicija pronadi(char[], pozicija);
+void ispisJednog(pozicija p);
+void brisi(char[], pozicija);
+pozicija pronadiPret(char[], pozicija);
 
 int main() {
-	pozicija head = NULL, d;
-	head = (pozicija)malloc(sizeof(osoba));
-	head->next = NULL;
-	char prezime[50];
-	char a;
-	printf("Odaberite opciju: \n \tu - Unesite novi element na pocetak liste \n \ti - Ispis liste \n \t
-		z - Unesite novi element na kraj liste \n \tt - Trazenje elementa \n \t, v - van programa");
-		while (1)
-			scanf("%c", &a);
-	switch (s)
-	{
-	case 'u':
-		UnesiEl(head);
-		break;
-	case 'i':
-		Isp(head->next);
-		break;
-	case 'z':
-		UnesiElK(head->next, d);
-		break;
-	case 't':
-		TraziEl(head, prezime);
-		break;
-	case 'v':
-		return 0;
-		break;
+	struct osoba head;
+	head.next = NULL;
+	char prezim[50];
+	pozicija t;
 
-	}
-	free(head);
+	umetniPocetak(&head);
+	umetniKraj(&head);
+	ispis(head.next);
+	t = pronadi(prezim, head.next);
+	ispisJednog(t);
+	brisi(prezim, &head);
+	ispis(head.next);
+
 	return 0;
 }
 
-void UnesiEl(pozicija p)
-{
-	pozicija d = NULL;
-	d = (pozicija)malloc(sizeof(osoba));
-	if (d == NULL)
-		return 1;
-	Podatci(d);
-	d->next = p->next;
-	p->next = d;
-}
-
-void Podatci(pozicija d)
-{
-	scanf(" %s", d->ime);
-	scanf(" %s", d->prezime);
-	scanf(" %d", &d->godina);
-}
-
-int Isp(pozicija p)
-{
-	printf("Sadrzaj elemenata");
-	printf("%s %s %d\n", p->ime, p->prezime, p->godina);
-}
-
-void UnesiElK(pozicija d, pozicija p)
-{
-	while (d->next != NULL) {
-		d = d->next;
-	}
-	UnesiEl(p);
-}
-
-pozicija TraziEl(pozicija p, char prezime[])
-{
-	while ((p->next != NULL) && strcmp(p->prezime, prezime) != NULL)
+void ispis(pozicija p) {
+	while (p != NULL)
+	{
+		printf("%s, %s, %d\n", p->ime, p->prezime, p->godina);
 		p = p->next;
+	}
+}
+void ispisJednog(pozicija p) {
+
+	printf("%s, %s, %d\n", p->ime, p->prezime, p->godina);
+}
+
+void umetniPocetak(pozicija p) {
+	pozicija q;
+
+	q = (pozicija)malloc(sizeof(struct osoba));
+	unesiPodatke(q);
+
+	q->next = p->next;
+	p->next = q;
+}
+
+void unesiPodatke(pozicija q) {
+
+	printf("Unesi prezime\n");
+	scanf("%s", q->prezime);
+	printf("Unesi ime\n");
+	scanf("%s", q->ime);
+	printf("Unesi godinu\n");
+	scanf("%d", &q->godina);
+}
+
+void umetniKraj(pozicija p) {
+	pozicija q;
+
+	q = (pozicija)malloc(sizeof(struct osoba));
+	unesiPodatke(q);
+
+	while (p->next != NULL)
+	{
+		p = p->next;
+	}
+	q->next = p->next;
+	p->next = q;
+}
+
+pozicija pronadi(char prezim[], pozicija p) {
+	printf("Unesi prezime elementa kojeg zelis pronaci\n");
+	scanf("%s", prezim);
+	while (p != NULL && strcmp(p->prezime, prezim) != NULL)
+		p = p->next;
+	if (p == NULL)
+		printf("Element ne postoji.");
 	return p;
+}
+
+pozicija pronadiPret(char prezim[], pozicija p) {
+	printf("Unesi prezime elementa kojeg zelis pronaci\n");
+	scanf("%s", prezim);
+	while (p->next != NULL && strcmp(p->next->prezime, prezim) != NULL) {
+		p = p->next;
+	}
+	if (p->next == NULL) {
+		printf("Element ne Postoji");
+		return NULL;
+	}
+	return p;
+}
+
+void brisi(char prezim[], pozicija p) {
+	pozicija pret;
+
+	pret = pronadiPret(prezim, p);
+	if (pret != NULL) {
+		p = pret->next;
+		pret->next = p->next;
+		free(p);
+	}
 }
 
