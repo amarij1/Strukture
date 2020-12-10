@@ -1,59 +1,65 @@
 #define _CRT_SECURE_NO_WARNINGS
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 
-typedef struct
-{
+typedef struct {
 	char ime[20];
 	char prez[20];
-	int bodovi;
+	int bod;
 }student;
 
+int brojR();
+void unos(int, student*);
+void ispis(student*, int);
+
 int main() {
-	int n = 0, br = 0, maks = 0, u = 0, is = 0;
-	char c;
+	int br;
+	//broj redaka
+	br = brojR();
 	student* s;
+	s = (student*)malloc(br * sizeof(student));
+	//unos u datoteku
+	unos(br, s);
+	//ispis datoteke
+	ispis(s, br);
+	return 0;
+}
 
-	char dat[20];
-
-	printf("Upisi naziv datoteke\n");
-	scanf("%s", dat);
-
+int brojR() {
 	FILE* ulz;
-	ulz = fopen(dat, "r");
-	if (ulz == NULL)
-	{
+	int br = 1;
+	ulz = fopen("proba.txt", "r");
+	if (ulz == NULL) {
 		printf("Greska");
 		exit(1);
 	}
-	//alokacija memorije
-	s = (student*)malloc(br * sizeof(student));
-	//broji retke, tj studente
-	while (!feof(ulz))
-	{
-		if (fgetc(ulz) == '\n')
-		{
+	while (!feof(ulz)) {
+		if (fgetc(ulz) == '\n') {
 			br++;
 		}
 	}
-	//maks broj bodova
-	printf("\nUnesi maksimalan broj bodova\n");
-	scanf("%d", &maks);
-	//upis datoteke
-	for (u = 0; u < br; u++) {
-		fscanf(ulz, "%s %s %d", s[u].ime, s[u].prez, &s[u].bodovi);
-	}
-	//ispis datoteke
-	for (is = 0; is < br; is++) {
-		printf("%s %s %d %f\n", s[is].ime, s[is].prez, &s[is].bodovi, ((float)s[is].bodovi / (float)maks * 100));
-	}
-
-
-
 	fclose(ulz);
-	free(s);
-	return 0;
+	return br;
 }
+
+void unos(int br, student* s) {
+	FILE* ulz;
+	int i;
+	ulz = fopen("proba.txt", "r");
+	for (i = 0; i < br; i++) {
+		fscanf(ulz, "%s %s %d", s[i].ime, s[i].prez, &s[i].bod);
+	}
+	fclose(ulz);
+}
+
+void ispis(student* s, int br) {
+	int maks = 50;
+	int i;
+	for (i = 0; i < br; i++) {
+		printf("%s %s %d/%d %f\n", (s + i)->ime, (s + i)->prez, (s + i)->bod, maks, ((float)(s + i)->bod / (float)maks * 100));
+	}
+
+}
+
