@@ -15,20 +15,49 @@ struct stak {
 	pozd next;
 };
 
-pozd pushd(pozd, pozp);
-pozp popd(pozd);
-char* ispis(pozicija, char[])
+pozp umetni(int el);
+void umetniEl(pozp, pozp, pozp);
+pozd push(pozd, pozp);
+pozp pop(pozd);
+void ispis(pozp);
 void unos(pozp, pozd);
-void push(pozp, int);
-int pop(pozp);
 int main() {
-	char dat[100];
-	dat = ispis(&root, dat)
-	FILE * ulz = fopen("proba.txt", "w");
-	fprintf(ulz,"%s", dat);
+	struct stablo headp;
+	headp.left = NULL;
+	headp.right = NULL;
+	struct stak headd;
+	headd.next = NULL;
+	unos(&headp, &headd);
+	FILE* ulz;
+	ulz = fopen("proba.txt", "w");
+	ispis(&headp, ulz);
+	fclose(ulz);
 	return 0;
 }
-pozd pushd(pozd p, pozp q) {
+
+void ispis(pozp p, FILE* ulz) {
+	if (p == NULL)return;
+	ispis(p->left, ulz);
+	fprintf(ulz, "%c", p->elp);
+	ispis(p->right, ulz);
+}
+void umetniEl(char a, pozp s, pozp p, pozp q) {
+	pozp temp;
+	temp = (pozp)malloc(sizeof(struct stablo));
+	temp->elp = a;
+	temp->right = p;
+	temp->left = q;
+}
+pozp umetni(int el) {
+	pozp temp;
+	temp = (pozp)malloc(sizeof(struct stablo));
+	temp->left = NULL;
+	temp->right = NULL;
+	temp->elp = el;
+	return temp;
+}
+
+pozd push(pozd p, pozp q) {
 	pozd s;
 	if (p == NULL) {
 		return NULL;
@@ -38,32 +67,24 @@ pozd pushd(pozd p, pozp q) {
 	s->next = p->next;
 	p->next = s;
 }
-pozp popd(pozd p) {
+pozp pop(pozd p) {
 	pozd q;
 	pozp s;
-	if (p == NULL) { 
+	if (p == NULL) {
 		return NULL;
 	}
 	else {
 		q = p->next;
-		p->next = q->next
-		s = q->eld
+		p->next = q->next;
+		s = p->eld;
 		free(q);
 	}
-	return q;
+	return s;
 }
 
-char* ispis(pozicija p, char dat[]) {
-	if (p = NULL) {
-		return NULL;
-	}
-	ispis(p->left, dat);
-	strcat(dat, " ");
-	strcat(dat, p->elp);
-	ispis(p->right, dat);
-}
 void unos(pozp p, pozd s) {
-	int i1, i2, rez;
+	pozp i1, i2, rez;
+	pozp temp;
 	FILE* ulz;
 	char a = 4;
 	ulz = fopen("proba.txt", "r");
@@ -75,76 +96,28 @@ void unos(pozp p, pozd s) {
 		case '+':
 			i2 = pop(p);
 			i1 = pop(p);
-			push(p, i1 + i2);
-			q = napravi(i1 + i2);
-			umetni(p, q);
+			umetniEl(a, p, i2, i1);
 			break;
 		case '-':
 			i2 = pop(p);
 			i1 = pop(p);
-			push(p, i1 - i2);
-			q = napravi(i1 + i2);
-			umetni(p, q);
+			umetniEl(a, p, i2, i1);
 			break;
 		case '*':
 			i2 = pop(p);
 			i1 = pop(p);
-			push(p, i1 * i2);
-			q = napravi(i1 + i2);
-			umetni(p, q);
+			umetniEl(a, p, i2, i1);
 			break;
 		case '/':
 			i2 = pop(p);
 			i1 = pop(p);
-			push(p, i1 / i2);
-			q = napravi(i1 + i2);
-			umetni(p, q);
+			umetniEl(a, p, i2, i1);
 			break;
 		default:
-			push(p, a - '0');
-			q = napravi(i1 + i2);
-			umetni(p, q);
+			temp = umetni(a - '0');
+			push(s, temp);
 			break;
 		}
 	}
 	fclose(ulz);
-	return 1;
-}
-pozp umetni(pozp p, pozp q) {
-	if (p == NULL)return el;
-	if (p->elp > q->elp) {
-		p->left = umetni(p->left, q);
-	}
-	else if (p->elp < q->elp) {
-		p->right = umetni(p->right, q);
-	}
-	else {
-		free(q);
-	}
-	return p;
-}
-pozp napravi(int el) {
-	pozp q = (pozp)malloc(sizeof(struct stablo));
-	q->elp = el;
-	q->left = q->right = NULL;
-	return q;
-}
-}
-void push(pozp p, int x) {
-	poz q;
-	q = (pozp)malloc(sizeof(struct stablo));
-	q->el = x;
-	q->next = p->next;
-	p->next = q;
-}
-int pop(pozp p) {
-	pozp temp;
-	int br = 0;
-	if (p->next != NULL) {
-		temp = p->next;
-		p->next = temp->next;
-		br = temp->elp;
-		free(temp);
-	}
-	return br;
 }
